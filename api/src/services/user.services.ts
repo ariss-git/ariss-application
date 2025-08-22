@@ -1,9 +1,10 @@
 import prisma from "../lib/prisma";
+import { UserType } from "@prisma/client";
 
 interface RegisterOwner {
   name: string;
-  phone: string;
   mobile: string;
+  email: string;
   userType: string;
   gstin: string;
   shippingAddress: {
@@ -13,7 +14,6 @@ interface RegisterOwner {
     stcd: string;
     adr: string;
   };
-  otp: string;
 }
 
 export class UserServices {
@@ -23,7 +23,28 @@ export class UserServices {
     this.prismaClient = prismaClient;
   }
 
-  async registerDealer(data: RegisterOwner) {
-    // TODO: Write API code
+  async registerDealer(data: RegisterOwner, otp: string) {
+    const exisiting = await this.prismaClient.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (exisiting) throw new Error("Dealer already exists");
+
+    // TODO: OTP working
+
+    // TODO: GSTIN working
+
+    return await this.prismaClient.user.create({
+      data: {
+        name: data.name,
+        mobile: data.mobile,
+        email: data.email,
+        user_type: UserType.DEALER,
+        gstin: data.gstin,
+        shipping_address: data.shippingAddress,
+      },
+    });
   }
 }
