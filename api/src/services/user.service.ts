@@ -1,3 +1,5 @@
+// api/src/services/user.service.ts
+
 import prisma from "../lib/prisma";
 import { UserType } from "@prisma/client";
 
