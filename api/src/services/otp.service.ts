@@ -1,14 +1,9 @@
 // src/services/otp.service.ts
 
 import crypto from "crypto"; // Node.js crypto module for generating random OTP
-import { config } from "../config/index.js"; // App config (email credentials, etc.)
-import transporter from "../lib/email-transporter.js"; // Nodemailer transporter instance
-import redisClient from "../lib/redis-client.js"; // Redis client instance
-
-interface EmailOTP {
-  email: string;
-  otp: string;
-}
+import { config } from "../config/index"; // App config (email credentials, etc.)
+import transporter from "../lib/email-transporter"; // Nodemailer transporter instance
+import redisClient from "../lib/redis-client"; // Redis client instance
 
 const OTP_EXPIRATION = 300; // OTP expiry time in seconds (5 minutes)
 
@@ -16,12 +11,12 @@ const OTP_EXPIRATION = 300; // OTP expiry time in seconds (5 minutes)
 export const generateOTP = () => crypto.randomInt(100000, 999999).toString();
 
 // Send OTP to user via email using Nodemailer
-export const sendOTPEmail = async (data: EmailOTP) => {
+export const sendOTPEmail = async (email: string, otp: string) => {
   const mailOptions = {
     from: config.emailUser, // Sender email
-    to: data.email, // Recipient email
+    to: email, // Recipient email
     subject: "Your OTP Code", // Email subject
-    text: `Your OTP code is: ${data.otp}. It expires in 5 minutes.`, // Email body
+    text: `Your OTP code is: ${otp}. It expires in 5 minutes.`, // Email body
   };
 
   await transporter.sendMail(mailOptions); // Send the email

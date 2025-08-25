@@ -1,7 +1,7 @@
 // src/lib/redis-client.ts
 
 import { createClient } from "redis";
-import { config } from "../config/index.js";
+import { config } from "../config/index";
 
 // Instance to connect to redis cache
 const redisClient = createClient({
